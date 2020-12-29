@@ -55,8 +55,57 @@ namespace Test
                     //step=u./abs(v).^(1/beta);
                     //Xnew = s+rand(size(s)).*0.01.*step.*(s-best);
 
-
-
+                    /*
+                                for i=1:size(Xnew,2)
+                                    if Xnew(i)>ub(i)
+                                        Xnew(i)=ub(i);
+                                    elseif Xnew(i)<lb(i)
+                                        Xnew(i)=lb(i);
+                                    end
+                                end
+                                
+                                fnew = fns(Xnew);
+                                if fnew>fx(j,:)
+                                    nest(j,:)=Xnew;
+                                    fx(j,:)=fnew;
+                                end
+                                
+                            end
+                            
+                            [fmin, K1] = min(fx);
+                            best = nest(K1,:);
+                            
+                            K=rand(size(nest))<pa;
+                            stepsizeK=rand*(nest(randperm(N),:)-nest(randperm(N),:));
+                            new_nest=nest+stepsizeK.*K;
+                            
+                            for ii=1:size(nest,1)
+                                s = new_nest(ii,:);
+                                for j=1:size(s,2)
+                                    if s(i)>ub(i)
+                                        s(i)=ub(i);
+                                    elseif s(i)<lb(i)
+                                        s(i)=lb(i);
+                                    end
+                                end
+                                new_nest(ii,:) = s;
+                                
+                                fnew = fns(s);
+                                if fnew>fx(ii,:)
+                                    nest(ii,:)=s;
+                                    fx(ii,:)=fnew;
+                                end
+                            end
+                            
+                            [optival, optind] = min(fx);
+                            Bestfx(iter) = optival;
+                            BestX(iter,:)=nest(optind,:);
+                            
+                            disp(['Iteracja = ' num2str(iter) ' Najlepszy wynik = ' num2str(Bestfx(iter))]);
+                        end
+                        best
+                        plot(Bestfx, 'linewidth', 2);
+*/
                 }
 
             }
