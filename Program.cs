@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Test
 {
@@ -10,7 +10,7 @@ namespace Test
             int liczbaKukulek = 7;
             int[] lb = new int[2]{-2,-2};
             int[] ub = new int[2]{2,2};
-
+            Random rnd = new Random();
             
             double[,] nest = new double[liczbaKukulek,D]; 
 
@@ -22,7 +22,6 @@ namespace Test
             {
                 for(int j=0;j<D;j++)
                 {
-                    Random rnd = new Random();
                     nest[i, j] = lb[j] + rnd.NextDouble() * (ub[j] - lb[j]);
                     //nest(i,j)=lb(:,j) + rand.*(ub(:,j)-lb(:,j));
 
@@ -35,45 +34,72 @@ namespace Test
 
             double beta = 3/2;
 
-            double sigma = Math.Pow(MathNet.Numerics.SpecialFunctions.Gamma(1+beta)*Math.Sin(Math.PI*beta/2) / 
-                            MathNet.Numerics.SpecialFunctions.Gamma((1+beta)/2)*beta* Math.Pow(2,(beta-1)/2),1/beta);
+            double sigma = Math.Pow(MathNet.Numerics.SpecialFunctions.Gamma(1+beta)*Math.Sin(Math.PI*beta/2) / (MathNet.Numerics.SpecialFunctions.Gamma((1+beta)/2)*beta* Math.Pow(2,(beta-1)/2)),1/beta);
 
-            //sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/beta));
-            //sigma nie dziala tak jak powinna :c
             //Console.Write(sigma);
             
+            double[] s = new double[D];
+            double[] u = new double[D];
+            double[] v = new double[D];
+            double[] step = new double[D];
+            double[] Xnew = new double[D];
+            double[] fnew = new double[liczbaKukulek];
+
             for(int iteration = 0;iteration < max_iteration; iteration++)
             {
-                //[fnv, indf] = min(fx);
-                //best = nest(indf,:);
+                double[] minVect = new double[2];
+                //minVect =
 
+                //WYMAGA ZNALEZIENIA ODPOWIEDNIKA FUNKCJI min() MATLABA
+                //[fnv, indf] = min(fx);
+
+                double[] best = new double[D];
+                for(int i=0;i<D;i++)
+                {
+                    best[i] = nest[indf,i];
+
+                    //KOD NIE KOMPILUJE SIĘ PONIEWAŻ NIE MA ZMIENNEJ indf
+
+                }
                 for(int j=0;j<liczbaKukulek;j++)
                 {
-                    //s=nest(j,:);
-                    //u=randn(size(s))*sigma;
-                    //v=randn(size(s));
-                    //step=u./abs(v).^(1/beta);
-                    //Xnew = s+rand(size(s)).*0.01.*step.*(s-best);
+                    
+
+                    for(int i=0;i<D;i++)
+                    {
+                        s[i] = nest[j,i];
+                        u[i] = rnd.NextDouble()*sigma;
+                        v[i] = rnd.NextDouble();
+                        step[i] = u[i] / Math.Pow(Math.Abs(v[i]),(1/beta));
+                        Xnew[i] = s[i] + (rnd.NextDouble() * 0.01 * step[i] * (s[i] - best[i]));
+
+                        if(Xnew[i]>ub[i])
+                        {
+                            Xnew[i] = ub[i];
+                        }  
+                        else if(Xnew[i]<lb[i])
+                        {
+                            Xnew[i] = lb[i];
+                        }
+                    }
+                    fnew = fns(Xnew);
+                    /*      
+                    
+                    if fnew>fx(j,:)
+                        nest(j,:)=Xnew;
+                        fx(j,:)=fnew;
+                        end         
+                    end
+                    [fmin, K1] = min(fx); 
+                    best = nest(K1,:);    
+                    */
+
+
+
 
                     /*
-                                for i=1:size(Xnew,2)
-                                    if Xnew(i)>ub(i)
-                                        Xnew(i)=ub(i);
-                                    elseif Xnew(i)<lb(i)
-                                        Xnew(i)=lb(i);
-                                    end
-                                end
-                                
-                                fnew = fns(Xnew);
-                                if fnew>fx(j,:)
-                                    nest(j,:)=Xnew;
-                                    fx(j,:)=fnew;
-                                end
-                                
-                            end
                             
-                            [fmin, K1] = min(fx);
-                            best = nest(K1,:);
+                            
                             
                             K=rand(size(nest))<pa;
                             stepsizeK=rand*(nest(randperm(N),:)-nest(randperm(N),:));
